@@ -22,8 +22,10 @@ jobs:
 
     - name: Convert AsciiDoc to HTML
       run: |
-        mkdir output
-        asciidoctor -D output/ *.adoc
+        mkdir -p output
+        for file in $(find . -name "*.adoc"); do
+          asciidoctor -o output/$(basename "${file}" .adoc).html "$file"
+        done
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
