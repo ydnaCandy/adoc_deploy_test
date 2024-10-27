@@ -1,0 +1,33 @@
+name: Deploy AsciiDoc to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v2
+      with:
+        ref: main
+
+    - name: Install Asciidoctor
+      run: |
+        sudo apt-get update
+        sudo apt-get install asciidoctor
+
+    - name: Convert AsciiDoc to HTML
+      run: |
+        mkdir output
+        asciidoctor -D output/ *.adoc
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./output
+        destination_branch: gh-pages
